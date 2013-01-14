@@ -67,27 +67,26 @@ Vagrant::Config.run do |config|
         }
       },
       "rabbitmq" => {
-           "url" => "http://deps.zenoss.com/yum/4.2.x/centos/6/os/x86_64/rabbitmq-server-2.8.6-1.noarch.rpm"
-      },
-      'maven' => {
-           '3' => {
-               'url' => 'http://apache.cs.utah.edu/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz'
-           }
+           "version" => "2.8.6" 
       },
       'yum' => {
           'epel_release' => '6-8'
       },
+
       'java' => {
           'install_flavor' => "oracle",
-          'java_home' => '/usr/java/default/',
-          "jdk" => {
-              "6" => {
-                  "x86_64" => {
-                    "url" => "http://mac.edgar.loc:8080/jdk-6u35-linux-x64-rpm.bin", #file from a localwebserver
-                    "checksum" => "a31198860f9f718077a746adf5ee48479b3b830d376b425c39b784087156b5a1", # sha256 checksum
-                  }
-              }
-          },
+          #'install_flavor' => "oracle_jre",
+              'oracle' => {
+                  'accept_oracle_download_terms' => true
+               },
+      },
+      'maven' => {
+          'version' => '3'
+      },
+      'ant' => {
+          'version' => '1.8.4',
+          'checksum' => '664f48cfc9c4a9a832ec1dd9d2bed5229c0a9561e489dcb88841d75d3c2c7cf9',
+          'install_method' => "source"
       },
       "RM" => {
            'ZODBADMINPASSWORD' => "Zenoss1",
@@ -100,10 +99,13 @@ Vagrant::Config.run do |config|
     }
 
     chef.run_list = [
-      "recipe[erlang]",
       "recipe[rabbitmq]",
+      "recipe[memcached]",
       "recipe[iptables::disabled]",
       "recipe[openssh]",
+      "recipe[java]",
+      "recipe[ant]",
+      "recipe[maven]",
       "recipe[zends::server]",
       "recipe[ZenossEnterprise::RMSource]"
     ]
