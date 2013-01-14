@@ -16,7 +16,7 @@ Vagrant::Config.run do |config|
   # to skip installing and copying to Vagrant's shelf.
   # config.berkshelf.except = []
 
-  config.vm.host_name = "zenoss"
+  config.vm.host_name = "zenossrpm"
 
   config.vm.box = "CentOS-6.3-x86_64-minimal"
 
@@ -74,8 +74,8 @@ Vagrant::Config.run do |config|
       },
 
       'java' => {
-          'install_flavor' => "oracle",
-          #'install_flavor' => "oracle_jre",
+          #'install_flavor' => "oracle",
+          'install_flavor' => "oracle_jre",
               'oracle' => {
                   'accept_oracle_download_terms' => true
                },
@@ -89,25 +89,22 @@ Vagrant::Config.run do |config|
           'install_method' => "source"
       },
       "RM" => {
-           'ZODBADMINPASSWORD' => "Zenoss1",
-           'ZEPADMINPASSWORD' => "Zenoss1",
-           "zenoss_src" => {
-             "svn_username" => "USERNAME",
-             "svn_password" => "PASSWORD",
+           'ZODBADMINPASSWORD' => "rootpass",
+           'ZEPADMINPASSWORD' => "rootpass",
+           'centos6' => {
+             "x86_64" => {
+                "url" => "http://artifacts.zenoss.loc/releases/4.2.3/ga/resmgr/zenoss_resmgr-4.2.3-1695.el6.x86_64.rpm"
+                }
            },
       },
     }
 
     chef.run_list = [
       "recipe[rabbitmq]",
-      "recipe[memcached]",
       "recipe[iptables::disabled]",
       "recipe[openssh]",
-      "recipe[java]",
-      "recipe[ant]",
-      "recipe[maven]",
       "recipe[zends::server]",
-      "recipe[ZenossEnterprise::RMSource]"
+      "recipe[ZenossEnterprise::RM]"
     ]
   end
 end
